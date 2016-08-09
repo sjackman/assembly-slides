@@ -24,7 +24,7 @@ reveal.js-3.3.0/js/reveal.js: revealjs-3.3.0.tar.gz
 reveal.js/js/reveal.js: reveal.js-3.3.0/js/reveal.js
 	mkdir -p reveal.js
 	cp -a reveal.js-3.3.0/* reveal.js/
-	sed -i '' -e 's/text-transform: uppercase;//' reveal.js/css/theme/sky.css
+	sed -i '' -e 's/text-transform: uppercase;//;s/3.77em/2.11em/' reveal.js/css/theme/sky.css
 
 # Dependencies
 assembly-slides.html: reveal.js/js/reveal.js
