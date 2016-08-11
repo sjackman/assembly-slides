@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Shaun Jackman">
+  <meta name="dcterms.date" content="2016-08-11">
+  <title>Genome Sequence Assembly</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="reveal.js/css/theme/sky.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">Genome Sequence Assembly</h1>
+  <h2 class="author">Shaun Jackman</h2>
+  <h3 class="date">2016-08-11</h3>
+</section>
+
+<section id="genome-sequence-assembly" class="slide level2">
+<h1>Genome Sequence Assembly</h1>
+<p>Shaun Jackman<br />
+<a href="http://twitter.com/sjackman">@sjackman</a> | <a href="https://github.com/sjackman">github.com/sjackman</a> | <a href="http://sjackman.ca">sjackman.ca</a></p>
+<p><a href="http://bcgsc.ca">BC Cancer Agency Genome Sciences Centre</a><br />
+Vancouver, Canada</p>
+<p><a href="http://creativecommons.org/licenses/by/4.0/"><img src="images/cc-by.png" alt="Creative Commons Attribution License" /></a><br />
+<a href="https://github.com/sjackman/assembly-slides">Slides on GitHub</a></p>
+<p>With many thanks to Rayan Chikhi for sharing <a href="http://evomicsorg.wpengine.netdna-cdn.com/wp-content/uploads/2016/01/Assembly-2016-v2.1.pdf">his slides</a></p>
+</section>
+<section><section id="what-why-how" class="titleslide slide level1"><h1>What, Why, How</h1></section><section id="what-are-you-assembling" class="slide level2">
+<h1>What are you assembling?</h1>
+<ul>
+<li>Who already has data to assemble?</li>
+<li>Who plan to sequence a species without a reference?</li>
+<li>DNA? RNA?</li>
+<li>Illumina? PacBio? Other?</li>
+<li>10x Genomics? BioNano? Fosmid / BAC?</li>
+</ul>
+</section><section id="why" class="slide level2">
+<h1>Why</h1>
+<ul>
+<li>Reference genome / transcriptome</li>
+<li>Gene content</li>
+<li>Novel sequence, un-mapped reads</li>
+<li>SNPs in non-model organisms</li>
+<li>Structural variants</li>
+<li>Metagenomics</li>
+<li>and more!</li>
+</ul>
+</section><section id="what-and-how-are-determined-by-why" class="slide level2">
+<h1>What and How are determined by Why</h1>
+</section><section id="scenario-1" class="slide level2">
+<h1>Scenario 1</h1>
+<dl>
+<dt><strong>Why</strong></dt>
+<dd><p>Comparative analyses, like gene synteny</p>
+</dd>
+<dt><strong>What</strong></dt>
+<dd><p>A complete genome</p>
+</dd>
+<dt><strong>How</strong></dt>
+<dd><p>High-coverage PacBio data</p>
+</dd>
+</dl>
+</section><section id="scenario-2" class="slide level2">
+<h1>Scenario 2</h1>
+<dl>
+<dt><strong>Why</strong></dt>
+<dd><p>Gene content and SNPs</p>
+</dd>
+<dt><strong>What</strong></dt>
+<dd><p>Draft quality assembly</p>
+</dd>
+<dt><strong>How</strong></dt>
+<dd><p>A couple of Illumina libraries</p>
+</dd>
+</dl>
+</section><section id="assembly-a-solved-problem" class="slide level2">
+<h1>Assembly: A solved problem?</h1>
+</section><section id="still-a-difficult-problem-in-2016" class="slide level2">
+<h1>Still a difficult problem in 2016</h1>
+<ul>
+<li>High computational requirements</li>
+<li>Long read methods are rapidly improving but still new</li>
+<li>Hard to obtain good assemblies from Illumina data</li>
+<li>Collapsed repeats and coverage gaps result in poor sequence contiguity</li>
+</ul>
+<p>Conclusion of the GAGE benchmark:</p>
+<blockquote>
+<p>In terms of assembly quality, there is no single best assembler.</p>
+</blockquote>
+</section><section id="current-research" class="slide level2">
+<h1>Current research</h1>
+<ul>
+<li>Assemblers for particular data types
+<ul>
+<li>PacBio</li>
+<li>Nanopore</li>
+<li>10x Genomics</li>
+</ul></li>
+<li>Efficient assemblers</li>
+<li>Best-practice protocols</li>
+<li>Assembly-based variant calling</li>
+</ul>
+</section></section>
+<section><section id="what-is-a-de-novo-assembly" class="titleslide slide level1"><h1>What is a de novo assembly</h1></section><section id="description" class="slide level2">
+<h1>Description</h1>
+<p>One definition of an assembly</p>
+<p>(a trickier question than it seems)</p>
+<h3 id="the-true-goal">The true goal</h3>
+<blockquote>
+<p>A set of sequences that approximates the original sequenced material.</p>
+</blockquote>
+<h3 id="more-pragmatically">More pragmatically</h3>
+<blockquote>
+<p>A set of sequences that explains the sequencing reads.</p>
+</blockquote>
+</section><section id="an-assembly" class="slide level2">
+<h1>An assembly…</h1>
+<ul>
+<li>is fragmented (discontiguous)</li>
+<li>is missing sequence</li>
+<li>mixes up alleles</li>
+<li>collapses repeats (wrong at a small scale)</li>
+<li>joins distant sequences (wrong at a large scale)</li>
+</ul>
+</section><section id="vocabulary" class="slide level2">
+<h1>Vocabulary</h1>
+<dl>
+<dt>Read</dt>
+<dd><p>Any sequence that comes out of the sequencer</p>
+</dd>
+<dt>Paired-end library</dt>
+<dd><p>Two reads from a fragment less than 1000 bp</p>
+</dd>
+<dt>Mate-pair library</dt>
+<dd><p>Two reads from a fragment larger than 1000 bp</p>
+</dd>
+<dt>Long read</dt>
+<dd><p>A read longer than 1000 bp</p>
+</dd>
+</dl>
+</section><section class="slide level2">
+
+<dl>
+<dt><em>k</em>-mer</dt>
+<dd><p>A <em>k</em> bp subsequence of a read</p>
+</dd>
+<dt>Unitig</dt>
+<dd><p>Contigs before collapsing heterozygous variants</p>
+</dd>
+<dt>Contig</dt>
+<dd><p>An assembled sequence with no gaps</p>
+</dd>
+<dt>Scaffold</dt>
+<dd><p>An assembled sequence with gaps (“N”s)</p>
+</dd>
+<dt>Scaftig</dt>
+<dd><p>Contigs extracted from scaffolds</p>
+</dd>
+</dl>
+</section></section>
+<section><section id="some-useful-assembly-theory" class="titleslide slide level1"><h1>Some useful assembly theory</h1></section><section id="graphs" class="slide level2">
+<h1>Graphs</h1>
+<p>A graph is composed of</p>
+<ul>
+<li>A set of vertices and</li>
+<li>A set of edges (directed or not)</li>
+</ul>
+<p>Each edge connects two vertices</p>
+</section><section id="assembly-graphs" class="slide level2">
+<h1>Assembly graphs</h1>
+<p>To make good choices, an assembler needs to find all overlapping reads.</p>
+<p>Two types of assembly graphs</p>
+<ul>
+<li>de Bruijn graphs for accurate reads (Illumina)</li>
+<li>overlap graphs for long reads (PacBio)</li>
+</ul>
+</section><section id="grokking-assembly-graphs" class="slide level2">
+<h1>Grokking assembly graphs</h1>
+<p>Someone who understands assembly graphs can intuit</p>
+<ul>
+<li>how <strong>nonuniform coverage</strong> creates gaps</li>
+<li>when <strong>repeats</strong> are collapsed</li>
+<li>how <strong>variant</strong> sequence can be lost</li>
+<li>how <strong>variant</strong> regions can appear twice</li>
+<li>how <strong>parameters</strong> affect the assembly</li>
+<li>the types of <strong>errors</strong> that assemblers make</li>
+</ul>
+</section><section id="overlap-graph" class="slide level2">
+<h1>Overlap graph</h1>
+<ul>
+<li>Each vertex represents a read</li>
+<li>Each edge joins two reads that overlap</li>
+</ul>
+<h3 id="traits">Traits</h3>
+<ul>
+<li>Lengths of reads and overlaps are variable</li>
+<li>Overlaps may be imperfect: mismatches and indels</li>
+</ul>
+<h3 id="advantages">Advantages</h3>
+<ul>
+<li>Represents overlaps between long, noisy reads</li>
+<li>Uses the full length of the read</li>
+</ul>
+</section><section id="de-bruijn-graph" class="slide level2">
+<h1>De Bruijn graph</h1>
+<ul>
+<li>Each vertex represents a <em>k</em>-mer of fixed size</li>
+<li>Each edge represents two <em>k</em>-mers that overlap perfectly by exactly <em>k</em>-1 bp</li>
+</ul>
+<p>A de Bruijn graph is a special case of an overlap graph.</p>
+</section><section id="de-bruijn-graph-1" class="slide level2">
+<h1>De Bruijn graph</h1>
+<h3 id="advantages-1">Advantages</h3>
+<ul>
+<li><strong>Memory</strong>: Size of each sequence and overlap are identical, so no need to store them in memory</li>
+<li><strong>Performance</strong>: Considers only perfect overlaps, no mismatches or indels</li>
+<li><strong>Self-trimming</strong>: Discards most bad <em>k</em>-mers</li>
+</ul>
+<h3 id="disadvantages">Disadvantages</h3>
+<ul>
+<li>Does not make use of the full length of the read</li>
+<li>Requires <em>k</em> perfect consecutive bases with no errors</li>
+</ul>
+</section><section id="example-de-bruijn-graph" class="slide level2">
+<h1>Example de Bruijn Graph</h1>
+<p>A single read and <em>k</em>=3</p>
+<pre><code>ACTG</code></pre>
+<p><code>ACT -&gt; CTG</code></p>
+<p>Many reads and <em>k</em>=3</p>
+<pre><code>ACTG
+ CTGC
+  TGCC</code></pre>
+<p><code>ACT -&gt; CTG -&gt; TGC -&gt; GCC</code></p>
+</section><section id="duplicate-reads" class="slide level2">
+<h1>Duplicate reads</h1>
+<p>What happens if we add duplicate reads?</p>
+<pre><code>ACTG
+ACTG
+ CTGC
+ CTGC
+ CTGC
+  TGCC
+  TGCC</code></pre>
+<p><code>ACT -&gt; CTG -&gt; TGC -&gt; GCC</code></p>
+<ul>
+<li>Reduces memory usage in principle because sequencing saturates the genome</li>
+<li>In practice error <em>k</em>-mers still accumulate linearly with the number of reads</li>
+</ul>
+</section><section id="errors-cause-tips" class="slide level2">
+<h1>Errors cause tips</h1>
+<p>How does a sequencing error at the end of a read impact the de Bruijn graph?</p>
+<p style="font-family:monospace;text-align:left">
+ACTG <br> CTGC <br> CTG<strong>A</strong> <br>  TGCC
+</p>
+<figure>
+<img src="images/dbg-tip.png" alt="A tip" /><figcaption>A tip</figcaption>
+</figure>
+</section><section id="snvs-cause-bubbles" class="slide level2">
+<h1>SNVs cause bubbles</h1>
+<p>What is the effect of a single-nucleotide variant (SNV) on the graph? (or a sequencing error in the middle of a read)</p>
+<p style="font-family:monospace;text-align:left">
+AGC<strong>A</strong>TGA<br> AGC<strong>C</strong>TGA
+</p>
+<p style="font-family:monospace;text-align:left">
+AGC -&gt; GC<strong>A</strong> -&gt; C<strong>A</strong>T -&gt; <strong>A</strong>TG -&gt; TGA<br> AGC -&gt; GC<strong>C</strong> -&gt; C<strong>C</strong>T -&gt; <strong>C</strong>TG -&gt; TGA
+</p>
+<figure>
+<img src="images/dbg-bubble.png" alt="A bubble" /><figcaption>A bubble</figcaption>
+</figure>
+</section><section id="repeats-cause-cycles" class="slide level2">
+<h1>Repeats cause cycles</h1>
+<p>What is the effect a small repeat on the graph?</p>
+<p style="font-family:monospace;text-align:left">
+AAA<strong>CTG</strong>T<strong>CTG</strong>ATTT<br>
+</p>
+<p style="font-family:monospace;text-align:left">
+AAA -&gt; AAC -&gt; ACT -&gt; <strong>CTG</strong> -&gt; TGT -&gt; GTC -&gt; TCT -&gt; <strong>CTG</strong> -&gt; TGA -&gt; GAT -&gt; ATT -&gt; TTT
+</p>
+<figure>
+<img src="images/dbg-repeat.png" alt="A repeat" /><figcaption>A repeat</figcaption>
+</figure>
+</section><section id="so-which-is-better" class="slide level2">
+<h1>So, which is better?</h1>
+<p>Typically</p>
+<ul>
+<li>de Bruijn graph is used for short read assembly</li>
+<li>overlap graph (OLC) is used for long read assembly</li>
+</ul>
+<p>OLC: Overlap, Layout, Consensus</p>
+</section></section>
+<section><section id="how-to-evaluate-an-assembly" class="titleslide slide level1"><h1>How to evaluate an assembly</h1></section><section id="metrics" class="slide level2">
+<h1>Metrics</h1>
+<p>Comparing assemblies is not simple.</p>
+<p>There’s a trade off between</p>
+<ul>
+<li>contiguity</li>
+<li>completeness</li>
+<li>correctness</li>
+</ul>
+</section><section id="assembly-metrics" class="slide level2">
+<h1>Assembly metrics</h1>
+<h3 id="contiguity">Contiguity</h3>
+<ul>
+<li>N50/NG50 of contigs/scaffolds</li>
+<li>Number of contigs/scaffolds</li>
+</ul>
+<h3 id="completeness">Completeness</h3>
+<ul>
+<li>Assembled genome size</li>
+<li>Number of core single-copy genes</li>
+</ul>
+<h3 id="correctness">Correctness</h3>
+<ul>
+<li>Number of breakpoints, aligned to a reference genome</li>
+<li>NGA50 of contigs/scaffolds</li>
+</ul>
+<p>Tools: QUAST and BUSCO (CEGMA)</p>
+</section></section>
+<section><section id="fin" class="titleslide slide level1"><h1>fin</h1></section><section id="exercise" class="slide level2">
+<h1>Exercise</h1>
+<pre><code>TACAGT
+  CAGTC
+   AGTCA
+      CAGA</code></pre>
+<ol type="1">
+<li><p>How many <em>k</em>-mers are in these reads for <em>k</em>=3 (including duplicates)?</p></li>
+<li><p>How many <em>distinct</em> <em>k</em>-mers are in these reads for <em>k</em>=3? <em>k</em>=5?</p></li>
+<li><p>Given these reads come from the genome TACAGTCAGA, what is the largest <em>k</em> such that the set of <em>k</em>-mers in the genome is identical to the set of <em>k</em>-mers in the reads above?</p></li>
+</ol>
+</section><section id="solution" class="slide level2">
+<h1>Solution</h1>
+<pre><code>TACAGT
+  CAGTC
+   AGTCA
+      CAGA</code></pre>
+<ol type="1">
+<li><p>How many <em>k</em>-mers are in these reads for <em>k</em>=3 (including duplicates)? <strong>12</strong></p></li>
+<li><p>How many <em>distinct</em> <em>k</em>-mers are in these reads? <br><strong>7 for <em>k</em>=3, and 4 for <em>k</em>=5</strong></p></li>
+<li><p>Given these reads come from the genome TACAGTCAGA, what is the largest <em>k</em> such that the set of <em>k</em>-mers in the genome is identical to the set of <em>k</em>-mers in the reads above? <br><strong><em>k</em>=3. For <em>k</em>=4, TCAG does not appear in the reads</strong></p></li>
+</ol>
+</section><section id="number-of-k-mers" class="slide level2">
+<h1>Number of <em>k</em>-mers</h1>
+<p>per read of length <em>l</em> is</p>
+<p><em>l</em> − <em>k</em> + 1</p>
+<p>(including duplicate <em>k</em>-mers)</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
