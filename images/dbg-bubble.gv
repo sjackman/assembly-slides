@@ -1,0 +1,5 @@
+digraph bubble {
+rankdir=LR
+AGC -> GCA -> CAT -> ATG -> TGA
+AGC -> GCC -> CCT -> CTG -> TGA
+}

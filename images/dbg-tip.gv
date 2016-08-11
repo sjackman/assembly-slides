@@ -1,0 +1,5 @@
+digraph tip {
+rankdir=LR
+ACT -> CTG -> TGC -> GCC
+CTG -> TGA
+}

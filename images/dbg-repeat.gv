@@ -1,0 +1,4 @@
+digraph repeat {
+rankdir = LR
+AAA -> AAC -> ACT -> CTG -> TGT -> GTC -> TCT -> CTG -> TGA -> GAT -> ATT -> TTT
+}
