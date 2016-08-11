@@ -6,6 +6,10 @@ all: assembly-slides.html
 clean:
 	rm -f assembly-slides.html
 
+# Render GraphViz DOT to PNG
+%.png: %.gv
+	dot -Tpng -o $@ $<
+
 # Render Markdown to HTML
 %.html: %.md
 	pandoc -sSt revealjs -Vtheme:sky -o $@ $<
@@ -27,4 +31,8 @@ reveal.js/js/reveal.js: reveal.js-3.3.0/js/reveal.js
 	sed -i '' -e 's/text-transform: uppercase;//;s/3.77em/2.11em/' reveal.js/css/theme/sky.css
 
 # Dependencies
-assembly-slides.html: reveal.js/js/reveal.js
+assembly-slides.html: \
+	reveal.js/js/reveal.js \
+	images/dbg-bubble.png \
+	images/dbg-repeat.png \
+	images/dbg-tip.png
